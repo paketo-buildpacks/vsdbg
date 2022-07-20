@@ -1,0 +1,20 @@
+api = "0.8"
+
+[buildpack]
+  id = "paketo-buildpacks/vsdbg"
+  name = "Paketo Buildpack for Visual Studio Debugger"
+  sbom-formats = ["application/vnd.cyclonedx+json", "application/spdx+json", "application/vnd.syft+json"]
+
+  [[buildpack.licenses]]
+    type = "Apache-2.0"
+    uri = "https://github.com/paketo-buildpacks/vsdbg/blob/main/LICENSE"
+
+[metadata]
+  include-files = ["bin/run", "bin/build", "bin/detect", "buildpack.toml"]
+  pre-package = "./scripts/build.sh"
+
+[[stacks]]
+  id = "io.buildpacks.stacks.bionic"
+
+[[stacks]]
+  id = "io.buildpacks.stacks.jammy"
