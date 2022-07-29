@@ -1,0 +1,5 @@
+[[requires]]
+name = "vsdbg"
+
+[requires.metadata]
+launch = true
