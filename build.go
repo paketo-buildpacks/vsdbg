@@ -1,7 +1,6 @@
 package vsdbg
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"time"
@@ -76,7 +75,7 @@ func Build(
 		layer.Launch, layer.Build, layer.Cache = launch, build, build
 
 		logger.Process("Executing build process")
-		logger.Subprocess(fmt.Sprintf("Installing Visual Studio Debugger %s", dependency.Version))
+		logger.Subprocess("Installing Visual Studio Debugger %s", dependency.Version)
 
 		duration, err := clock.Measure(func() error {
 			return dependencyManager.Deliver(dependency, context.CNBPath, layer.Path, context.Platform.Path)
