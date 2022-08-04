@@ -67,8 +67,15 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			if err != nil {
 				return fmt.Errorf("issue with stub call: %s", err)
 			}
+
 			vsdbgBinPath := filepath.Join(layersDir, "vsdbg", "vsdbg")
-			err = os.WriteFile(vsdbgBinPath, []byte{}, 0700)
+			err = os.WriteFile(vsdbgBinPath, []byte{}, 0600)
+			if err != nil {
+				return fmt.Errorf("issue with stub call: %s", err)
+			}
+
+			// vsdbg file has -rw-r--r-- permissions when extracted
+			err = os.Chmod(vsdbgBinPath, 0644)
 			if err != nil {
 				return fmt.Errorf("issue with stub call: %s", err)
 			}
@@ -176,9 +183,12 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(buffer.String()).To(ContainSubstring("Executing build process"))
 		Expect(buffer.String()).To(ContainSubstring("Installing Visual Studio Debugger"))
 
+		// test that the existing file permissions for vsdbg binary are preserved
+		// with the addition of owner and group-execute permissions
+
 		info, err := os.Stat(filepath.Join(layersDir, "vsdbg", "vsdbg"))
 		Expect(err).NotTo(HaveOccurred())
-		Expect(info.Mode().String()).To(Equal("-rwx--x---"))
+		Expect(info.Mode().String()).To(Equal("-rwxr-xr--"))
 	})
 
 	context("when build plan entries require vsdbg at build/launch", func() {
@@ -196,6 +206,10 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			layer := result.Layers[0]
 
 			Expect(layer.Name).To(Equal("vsdbg"))
+			Expect(layer.Path).To(Equal(filepath.Join(layersDir, "vsdbg")))
+			Expect(layer.Metadata).To(Equal(map[string]interface{}{
+				"dependency_sha": "vsdbg-dependency-sha",
+			}))
 
 			Expect(layer.Build).To(BeTrue())
 			Expect(layer.Launch).To(BeTrue())
@@ -203,6 +217,39 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		})
 	})
+
+	context("when rebuilding a layer", func() {
+		it.Before(func() {
+			err := os.WriteFile(filepath.Join(layersDir, fmt.Sprintf("%s.toml", vsdbg.PlanDependencyVSDBG)), []byte(fmt.Sprintf(`[metadata]
+			%s = "vsdbg-dependency-sha"
+			`, vsdbg.DependencySHAKey)), os.ModePerm)
+			Expect(err).NotTo(HaveOccurred())
+
+			buildContext.Plan.Entries[0].Metadata = make(map[string]interface{})
+			buildContext.Plan.Entries[0].Metadata["build"] = true
+			buildContext.Plan.Entries[0].Metadata["launch"] = false
+		})
+
+		it("skips the build process if the cached dependency sha matches the selected dependency sha", func() {
+			result, err := build(buildContext)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(result.Layers).To(HaveLen(1))
+			layer := result.Layers[0]
+
+			Expect(layer.Name).To(Equal("vsdbg"))
+
+			Expect(layer.Build).To(BeTrue())
+			Expect(layer.Launch).To(BeFalse())
+			Expect(layer.Cache).To(BeTrue())
+
+			Expect(buffer.String()).ToNot(ContainSubstring("Executing build process"))
+			Expect(buffer.String()).To(ContainSubstring("Reusing cached layer"))
+
+			Expect(dependencyManager.DeliverCall.CallCount).To(Equal(0))
+		})
+	})
+
 	context("failure cases", func() {
 		context("when dependency resolution fails", func() {
 			it.Before(func() {

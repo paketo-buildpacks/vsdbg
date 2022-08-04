@@ -82,7 +82,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			))
 
 			container, err = docker.Container.Run.
-				WithCommand("which vsdbg").
+				WithCommand("vsdbg --help").
 				Execute(image.ID)
 			Expect(err).ToNot(HaveOccurred())
 
@@ -90,7 +90,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				cLogs, err := docker.Container.Logs.Execute(container.ID)
 				Expect(err).NotTo(HaveOccurred())
 				return cLogs.String()
-			}).Should(ContainSubstring(fmt.Sprintf(`/layers/%s/vsdbg`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))))
+			}).Should(ContainSubstring(`Microsoft .NET Core Debugger (vsdbg)`))
 		})
 
 		context("validating SBOM", func() {
@@ -127,7 +127,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				Expect(err).ToNot(HaveOccurred(), logs.String)
 
 				container, err = docker.Container.Run.
-					WithCommand("which vsdbg").
+					WithCommand("vsdbg --help").
 					Execute(image.ID)
 				Expect(err).ToNot(HaveOccurred())
 
@@ -135,7 +135,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 					cLogs, err := docker.Container.Logs.Execute(container.ID)
 					Expect(err).NotTo(HaveOccurred())
 					return cLogs.String()
-				}).Should(ContainSubstring(fmt.Sprintf(`/layers/%s/vsdbg`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))))
+				}).Should(ContainSubstring(`Microsoft .NET Core Debugger (vsdbg)`))
 
 				Expect(logs).To(ContainLines(
 					fmt.Sprintf("  Generating SBOM for /layers/%s/vsdbg", strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_")),

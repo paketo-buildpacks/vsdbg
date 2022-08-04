@@ -95,8 +95,6 @@ func testReusingLayerRebuild(t *testing.T, context spec.G, it spec.S) {
 
 			firstContainer, err = docker.Container.Run.
 				WithCommand("which vsdbg").
-				WithPublish("8080").
-				WithPublishAll().
 				Execute(firstImage.ID)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -120,9 +118,7 @@ func testReusingLayerRebuild(t *testing.T, context spec.G, it spec.S) {
 			))
 
 			secondContainer, err = docker.Container.Run.
-				WithCommand("which vsdbg").
-				WithPublish("8080").
-				WithPublishAll().
+				WithCommand("vsdbg --help").
 				Execute(secondImage.ID)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -132,7 +128,7 @@ func testReusingLayerRebuild(t *testing.T, context spec.G, it spec.S) {
 				cLogs, err := docker.Container.Logs.Execute(secondContainer.ID)
 				Expect(err).NotTo(HaveOccurred())
 				return cLogs.String()
-			}).Should(ContainSubstring(fmt.Sprintf(`/layers/%s/vsdbg`, strings.ReplaceAll(buildpackInfo.Buildpack.ID, "/", "_"))))
+			}).Should(ContainSubstring(`Microsoft .NET Core Debugger (vsdbg)`))
 
 			Expect(secondImage.Buildpacks[0].Layers["vsdbg"].SHA).To(Equal(firstImage.Buildpacks[0].Layers["vsdbg"].SHA))
 		})
