@@ -95,6 +95,7 @@ func Build(
 
 		err = os.Chmod(vsdbgBinPath, info.Mode()|0110)
 		if err != nil {
+			// not tested
 			return packit.BuildResult{}, err
 		}
 
