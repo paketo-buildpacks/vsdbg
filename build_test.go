@@ -81,7 +81,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			}
 
 			return nil
-
 		}
 
 		sbomGenerator = &fakes.SBOMGenerator{}
@@ -96,6 +95,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			logEmitter,
 			chronos.DefaultClock,
 		)
+
 		buildContext = packit.BuildContext{
 			BuildpackInfo: packit.BuildpackInfo{
 				Name:        "Some Buildpack",
@@ -119,7 +119,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(os.RemoveAll(layersDir)).To(Succeed())
 		Expect(os.RemoveAll(cnbDir)).To(Succeed())
 		Expect(os.RemoveAll(workingDir)).To(Succeed())
-
 	})
 
 	it("returns a result that installs vsdbg", func() {
@@ -185,7 +184,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 		// test that the existing file permissions for vsdbg binary are preserved
 		// with the addition of owner and group-execute permissions
-
 		info, err := os.Stat(filepath.Join(layersDir, "vsdbg", "vsdbg"))
 		Expect(err).NotTo(HaveOccurred())
 		Expect(info.Mode().String()).To(Equal("-rwxr-xr--"))
@@ -214,7 +212,6 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			Expect(layer.Build).To(BeTrue())
 			Expect(layer.Launch).To(BeTrue())
 			Expect(layer.Cache).To(BeTrue())
-
 		})
 	})
 
@@ -305,6 +302,17 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 				_, err := build(buildContext)
 
 				Expect(err).To(MatchError(ContainSubstring("failed to install dependency")))
+			})
+		})
+
+		context("when dependency cannot be installed", func() {
+			it.Before(func() {
+				dependencyManager.DeliverCall.Stub = nil
+			})
+			it("returns an error", func() {
+				_, err := build(buildContext)
+
+				Expect(err).To(MatchError(ContainSubstring("no such file or directory")))
 			})
 		})
 
