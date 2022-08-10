@@ -33,11 +33,15 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			image     occam.Image
 			container occam.Container
 			name      string
+			source    string
 		)
 
 		it.Before(func() {
 			var err error
 			name, err = occam.RandomName()
+			Expect(err).NotTo(HaveOccurred())
+
+			source, err = occam.Source(filepath.Join("testdata", "default_app"))
 			Expect(err).NotTo(HaveOccurred())
 		})
 
@@ -56,7 +60,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 					settings.Buildpacks.VSDBG.Online,
 					settings.Buildpacks.BuildPlan.Online,
 				).
-				Execute(name, filepath.Join("testdata", "default_app"))
+				Execute(name, source)
 			Expect(err).ToNot(HaveOccurred(), logs.String)
 
 			Expect(logs).To(ContainLines(
@@ -123,7 +127,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 						"BP_LOG_LEVEL": "DEBUG",
 					}).
 					WithSBOMOutputDir(sbomDir).
-					Execute(name, filepath.Join("testdata", "default_app"))
+					Execute(name, source)
 				Expect(err).ToNot(HaveOccurred(), logs.String)
 
 				container, err = docker.Container.Run.
