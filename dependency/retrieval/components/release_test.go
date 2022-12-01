@@ -47,6 +47,25 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 				case "/non-200":
 					w.WriteHeader(http.StatusTeapot)
 
+				case "/no-function":
+					w.WriteHeader(http.StatusOK)
+					fmt.Fprintln(w, `{
+    version_string="$(echo "$1" | awk '{print tolower($0)}')"
+    case "$version_string" in
+        latest)
+            __VsDbgVersion=17.4.11017.1
+					`)
+
+				case "/no-latest-version":
+					w.WriteHeader(http.StatusOK)
+					fmt.Fprintln(w, `set_vsdbg_version()
+{
+    version_string="$(echo "$1" | awk '{print tolower($0)}')"
+    case "$version_string" in
+        oldest)
+            __VsDbgVersion=17.4.11017.1
+					`)
+
 				case "/wrong-version-format":
 					w.WriteHeader(http.StatusOK)
 					fmt.Fprintln(w, `set_vsdbg_version()
@@ -108,6 +127,28 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 				it("returns an error", func() {
 					_, err := fetcher.Get()
 					Expect(err).To(MatchError(fmt.Sprintf("received a non 200 status code from %s: status code 418 received", fmt.Sprintf("%s/non-200", server.URL))))
+				})
+			})
+
+			context("when there is no set_vsdbg_version function", func() {
+				it.Before(func() {
+					fetcher = fetcher.WithScriptURL(fmt.Sprintf("%s/no-function", server.URL))
+				})
+
+				it("returns an error", func() {
+					_, err := fetcher.Get()
+					Expect(err).To(MatchError(`set_vsdbg_version() function not found`))
+				})
+			})
+
+			context("when there is no latest version", func() {
+				it.Before(func() {
+					fetcher = fetcher.WithScriptURL(fmt.Sprintf("%s/no-latest-version", server.URL))
+				})
+
+				it("returns an error", func() {
+					_, err := fetcher.Get()
+					Expect(err).To(MatchError(`latest version not found`))
 				})
 			})
 

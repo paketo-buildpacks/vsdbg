@@ -61,7 +61,14 @@ func (f Fetcher) Get() ([]Release, error) {
 			inFunction = true
 			continue
 		}
+	}
 
+	if !inFunction {
+		return nil, fmt.Errorf("set_vsdbg_version() function not found")
+	}
+
+	if !latest {
+		return nil, fmt.Errorf("latest version not found")
 	}
 
 	splitVersion := strings.Split(version, ".")
