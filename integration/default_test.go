@@ -70,11 +70,11 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				"      <unknown> -> \"\"",
 			))
 			Expect(logs).To(ContainLines(
-				MatchRegexp(`    Selected Visual Studio Debugger version \(using <unknown>\): \d+\-\d+\-\d+\-\d+`),
+				MatchRegexp(`    Selected Visual Studio Debugger version \(using <unknown>\): \d+\.\d+\.\d+\+\d+`),
 			))
 			Expect(logs).To(ContainLines(
 				"  Executing build process",
-				MatchRegexp(`    Installing Visual Studio Debugger \d+\-\d+\-\d+\-\d+`),
+				MatchRegexp(`    Installing Visual Studio Debugger \d+\.\d+\.\d+\+\d+`),
 				MatchRegexp(`      Completed in \d+\.\d+`),
 			))
 			Expect(logs).To(ContainLines(

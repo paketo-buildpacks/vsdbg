@@ -89,7 +89,7 @@ func testReusingLayerRebuild(t *testing.T, context spec.G, it spec.S) {
 			))
 			Expect(logs).To(ContainLines(
 				"  Executing build process",
-				MatchRegexp(`    Installing Visual Studio Debugger \d+\-\d+\-\d+\-\d+`),
+				MatchRegexp(`    Installing Visual Studio Debugger \d+\.\d+\.\d+\+\d+`),
 				MatchRegexp(`      Completed in \d+\.\d+`),
 			))
 

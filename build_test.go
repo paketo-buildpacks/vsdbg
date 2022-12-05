@@ -51,12 +51,12 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(err).NotTo(HaveOccurred())
 
 		dependency := postal.Dependency{
-			ID:      "vsdbg",
-			Name:    "vsdbg-dependency-name",
-			SHA256:  "vsdbg-dependency-sha",
-			Stacks:  []string{"some-stack"},
-			URI:     "vsdbg-dependency-uri",
-			Version: "vsdbg-dependency-version",
+			ID:       "vsdbg",
+			Name:     "vsdbg-dependency-name",
+			Checksum: "sha256:vsdbg-dependency-sha",
+			Stacks:   []string{"some-stack"},
+			URI:      "vsdbg-dependency-uri",
+			Version:  "vsdbg-dependency-version",
 		}
 
 		dependencyManager = &fakes.DependencyManager{}
@@ -145,7 +145,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(layer.Cache).To(BeFalse())
 
 		Expect(layer.Metadata).To(HaveLen(1))
-		Expect(layer.Metadata["dependency_sha"]).To(Equal("vsdbg-dependency-sha"))
+		Expect(layer.Metadata["dependency-checksum"]).To(Equal("sha256:vsdbg-dependency-sha"))
 
 		Expect(layer.SBOM.Formats()).To(Equal([]packit.SBOMFormat{
 			{
@@ -164,12 +164,12 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 		Expect(dependencyManager.ResolveCall.Receives.Stack).To(Equal("some-stack"))
 
 		Expect(dependencyManager.DeliverCall.Receives.Dependency).To(Equal(postal.Dependency{
-			ID:      "vsdbg",
-			Name:    "vsdbg-dependency-name",
-			SHA256:  "vsdbg-dependency-sha",
-			Stacks:  []string{"some-stack"},
-			URI:     "vsdbg-dependency-uri",
-			Version: "vsdbg-dependency-version",
+			ID:       "vsdbg",
+			Name:     "vsdbg-dependency-name",
+			Checksum: "sha256:vsdbg-dependency-sha",
+			Stacks:   []string{"some-stack"},
+			URI:      "vsdbg-dependency-uri",
+			Version:  "vsdbg-dependency-version",
 		}))
 
 		Expect(dependencyManager.DeliverCall.Receives.CnbPath).To(Equal(cnbDir))
@@ -206,7 +206,7 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 			Expect(layer.Name).To(Equal("vsdbg"))
 			Expect(layer.Path).To(Equal(filepath.Join(layersDir, "vsdbg")))
 			Expect(layer.Metadata).To(Equal(map[string]interface{}{
-				"dependency_sha": "vsdbg-dependency-sha",
+				"dependency-checksum": "sha256:vsdbg-dependency-sha",
 			}))
 
 			Expect(layer.Build).To(BeTrue())
@@ -217,9 +217,9 @@ func testBuild(t *testing.T, context spec.G, it spec.S) {
 
 	context("when rebuilding a layer", func() {
 		it.Before(func() {
-			err := os.WriteFile(filepath.Join(layersDir, fmt.Sprintf("%s.toml", vsdbg.PlanDependencyVSDBG)), []byte(fmt.Sprintf(`[metadata]
-			%s = "vsdbg-dependency-sha"
-			`, vsdbg.DependencySHAKey)), os.ModePerm)
+			err := os.WriteFile(filepath.Join(layersDir, fmt.Sprintf("%s.toml", vsdbg.PlanDependencyVSDBG)), []byte(`[metadata]
+dependency-checksum = "sha256:vsdbg-dependency-sha"
+			`), os.ModePerm)
 			Expect(err).NotTo(HaveOccurred())
 
 			buildContext.Plan.Entries[0].Metadata = make(map[string]interface{})
