@@ -3,7 +3,7 @@ module github.com/paketo-buildpacks/vsdbg
 go 1.18
 
 require (
-	github.com/BurntSushi/toml v1.3.1
+	github.com/BurntSushi/toml v1.3.2
 	github.com/Masterminds/semver/v3 v3.2.1
 	github.com/anchore/packageurl-go v0.1.1-0.20230104203445-02e0a6721501
 	github.com/go-enry/go-license-detector/v4 v4.3.0
