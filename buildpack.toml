@@ -14,16 +14,16 @@ api = "0.8"
   pre-package = "./scripts/build.sh"
 
   [[metadata.dependencies]]
-    checksum = "sha256:b055ab29a1c71391a77dc2b5ab8384db7fe490a14defa17e1afec537b434ef65"
-    cpe = "cpe:2.3:a:microsoft:vsdbg:17.10.20209.7:*:*:*:*:*:*:*"
+    checksum = "sha256:746c9046561d28cda5bc36d1fecdcfa9a02aeee6d1f2e8edd02887c6b05b46dc"
+    cpe = "cpe:2.3:a:microsoft:vsdbg:17.11.10506.2:*:*:*:*:*:*:*"
     id = "vsdbg"
     name = "Visual Studio Debugger"
-    purl = "pkg:generic/vsdbg@17.10.20209.7?checksum=b055ab29a1c71391a77dc2b5ab8384db7fe490a14defa17e1afec537b434ef65&download_url=https://vsdebugger.azureedge.net/vsdbg-17-10-20209-7/vsdbg-linux-x64.tar.gz"
-    source = "https://vsdebugger.azureedge.net/vsdbg-17-10-20209-7/vsdbg-linux-x64.tar.gz"
-    source-checksum = "sha256:b055ab29a1c71391a77dc2b5ab8384db7fe490a14defa17e1afec537b434ef65"
+    purl = "pkg:generic/vsdbg@17.11.10506.2?checksum=746c9046561d28cda5bc36d1fecdcfa9a02aeee6d1f2e8edd02887c6b05b46dc&download_url=https://vsdebugger.azureedge.net/vsdbg-17-11-10506-2/vsdbg-linux-x64.tar.gz"
+    source = "https://vsdebugger.azureedge.net/vsdbg-17-11-10506-2/vsdbg-linux-x64.tar.gz"
+    source-checksum = "sha256:746c9046561d28cda5bc36d1fecdcfa9a02aeee6d1f2e8edd02887c6b05b46dc"
     stacks = ["io.buildpacks.stacks.bionic", "io.buildpacks.stacks.jammy"]
-    uri = "https://vsdebugger.azureedge.net/vsdbg-17-10-20209-7/vsdbg-linux-x64.tar.gz"
-    version = "17.10.20209+7"
+    uri = "https://vsdebugger.azureedge.net/vsdbg-17-11-10506-2/vsdbg-linux-x64.tar.gz"
+    version = "17.11.10506+2"
 
   [[metadata.dependency-constraints]]
     constraint = "*"
