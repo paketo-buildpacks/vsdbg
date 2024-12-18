@@ -14,16 +14,16 @@ api = "0.8"
   pre-package = "./scripts/build.sh"
 
   [[metadata.dependencies]]
-    checksum = "sha256:3f6ee5f29d704d9f46245c4a8bd61a930a1abc7ab709fca31ec382bb14963dc9"
-    cpe = "cpe:2.3:a:microsoft:vsdbg:17.12.11102.1:*:*:*:*:*:*:*"
+    checksum = "sha256:7b6612b56b9109629d2397c927c99d71918993fd21b56a6a517c6e4efda89a6d"
+    cpe = "cpe:2.3:a:microsoft:vsdbg:17.12.11216.3:*:*:*:*:*:*:*"
     id = "vsdbg"
     name = "Visual Studio Debugger"
-    purl = "pkg:generic/vsdbg@17.12.11102.1?checksum=3f6ee5f29d704d9f46245c4a8bd61a930a1abc7ab709fca31ec382bb14963dc9&download_url=https://vsdebugger.azureedge.net/vsdbg-17-12-11102-1/vsdbg-linux-x64.tar.gz"
-    source = "https://vsdebugger.azureedge.net/vsdbg-17-12-11102-1/vsdbg-linux-x64.tar.gz"
-    source-checksum = "sha256:3f6ee5f29d704d9f46245c4a8bd61a930a1abc7ab709fca31ec382bb14963dc9"
+    purl = "pkg:generic/vsdbg@17.12.11216.3?checksum=7b6612b56b9109629d2397c927c99d71918993fd21b56a6a517c6e4efda89a6d&download_url=https://vsdebugger.azureedge.net/vsdbg-17-12-11216-3/vsdbg-linux-x64.tar.gz"
+    source = "https://vsdebugger.azureedge.net/vsdbg-17-12-11216-3/vsdbg-linux-x64.tar.gz"
+    source-checksum = "sha256:7b6612b56b9109629d2397c927c99d71918993fd21b56a6a517c6e4efda89a6d"
     stacks = ["io.buildpacks.stacks.bionic", "io.buildpacks.stacks.jammy"]
-    uri = "https://vsdebugger.azureedge.net/vsdbg-17-12-11102-1/vsdbg-linux-x64.tar.gz"
-    version = "17.12.11102+1"
+    uri = "https://vsdebugger.azureedge.net/vsdbg-17-12-11216-3/vsdbg-linux-x64.tar.gz"
+    version = "17.12.11216+3"
 
   [[metadata.dependency-constraints]]
     constraint = "*"
