@@ -80,7 +80,7 @@ func (f Fetcher) Get() ([]Release, error) {
 
 	release.Version = version
 
-	release.URL = fmt.Sprintf("https://vsdebugger.azureedge.net/vsdbg-%s/vsdbg-linux-x64.tar.gz", strings.Join(splitVersion, "-"))
+	release.URL = fmt.Sprintf("https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-%s/vsdbg-linux-x64.tar.gz", strings.Join(splitVersion, "-"))
 
 	release.SemVer, err = semver.NewVersion(fmt.Sprintf("%s+%s", strings.Join(splitVersion[:3], "."), splitVersion[3]))
 	if err != nil {
