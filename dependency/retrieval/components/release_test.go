@@ -102,7 +102,7 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 				{
 					SemVer:  semver.MustParse("17.4.11017+1"),
 					Version: "17.4.11017.1",
-					URL:     "https://vsdebugger.azureedge.net/vsdbg-17-4-11017-1/vsdbg-linux-x64.tar.gz",
+					URL:     "https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-17-4-11017-1/vsdbg-linux-x64.tar.gz",
 				},
 			}))
 		})
