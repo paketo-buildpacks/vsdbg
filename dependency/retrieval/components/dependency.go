@@ -30,18 +30,12 @@ func ConvertReleaseToDependency(release Release) (cargo.ConfigMetadataDependency
 
 	purl := GeneratePURL("vsdbg", release.Version, strings.TrimPrefix(hash, "sha256:"), release.URL)
 
-	licenses, err := GenerateLicenseInformation(release.URL)
-	if err != nil {
-		return cargo.ConfigMetadataDependency{}, err
-	}
-
 	return cargo.ConfigMetadataDependency{
 		ID:      "vsdbg",
 		Name:    "Visual Studio Debugger",
 		Version: release.SemVer.String(),
 		Stacks: []string{
-			"io.buildpacks.stacks.bionic",
-			"io.buildpacks.stacks.jammy",
+			"*",
 		},
 		URI:            release.URL,
 		Checksum:       hash,
@@ -49,6 +43,6 @@ func ConvertReleaseToDependency(release Release) (cargo.ConfigMetadataDependency
 		SourceChecksum: hash,
 		CPE:            fmt.Sprintf("cpe:2.3:a:microsoft:vsdbg:%s:*:*:*:*:*:*:*", release.Version),
 		PURL:           purl,
-		Licenses:       licenses,
+		Licenses:       nil, // VSDBG does not use a standard open source license
 	}, nil
 }
