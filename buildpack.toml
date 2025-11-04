@@ -10,8 +10,13 @@ api = "0.8"
     uri = "https://github.com/paketo-buildpacks/vsdbg/blob/main/LICENSE"
 
 [metadata]
-  include-files = ["bin/run", "bin/build", "bin/detect", "buildpack.toml"]
-  pre-package = "./scripts/build.sh"
+  include-files = [
+    "buildpack.toml",
+    "linux/amd64/bin/build",
+    "linux/amd64/bin/detect",
+    "linux/amd64/bin/run"
+  ]
+  pre-package = "./scripts/build.sh --target linux/amd64"
 
   [[metadata.dependencies]]
     checksum = "sha256:859c7da25e8dffecff3e72458f1367c0e2d2f8530067fb0ae44ea2c4b0021feb"
@@ -33,3 +38,6 @@ api = "0.8"
 [[stacks]]
   id = "*"
 
+[[targets]]
+  arch = "amd64"
+  os = "linux"
