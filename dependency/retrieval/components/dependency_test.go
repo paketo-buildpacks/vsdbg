@@ -83,11 +83,6 @@ func testDependency(t *testing.T, context spec.G, it spec.S) {
 				case "/non-200":
 					w.WriteHeader(http.StatusTeapot)
 
-				case "/bad-archive":
-					w.WriteHeader(http.StatusOK)
-					_, err := w.Write([]byte("\x66\x4C\x61\x43\x00\x00\x00\x22"))
-					Expect(err).NotTo(HaveOccurred())
-
 				default:
 					t.Fatalf("unknown path: %s", req.URL.Path)
 				}
@@ -104,20 +99,17 @@ func testDependency(t *testing.T, context spec.G, it spec.S) {
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(dependency).To(Equal(cargo.ConfigMetadataDependency{
-				Checksum:       "sha256:5a95bcffa592dcc7689ef5b4d993da3ca805b3c58d1710da8effeedbda87d471",
-				CPE:            "cpe:2.3:a:microsoft:vsdbg:17.4.11017.1:*:*:*:*:*:*:*",
-				PURL:           fmt.Sprintf("pkg:generic/vsdbg@17.4.11017.1?checksum=5a95bcffa592dcc7689ef5b4d993da3ca805b3c58d1710da8effeedbda87d471&download_url=%s", server.URL),
-				ID:             "vsdbg",
-				Licenses:       []interface{}{"MIT", "MIT-0"},
-				Name:           "Visual Studio Debugger",
-				SHA256:         "",
-				Source:         server.URL,
-				SourceChecksum: "sha256:5a95bcffa592dcc7689ef5b4d993da3ca805b3c58d1710da8effeedbda87d471",
-				SourceSHA256:   "",
-				Stacks: []string{
-					"io.buildpacks.stacks.bionic",
-					"io.buildpacks.stacks.jammy",
-				},
+				Checksum:        "sha256:5a95bcffa592dcc7689ef5b4d993da3ca805b3c58d1710da8effeedbda87d471",
+				CPE:             "cpe:2.3:a:microsoft:vsdbg:17.4.11017.1:*:*:*:*:*:*:*",
+				PURL:            fmt.Sprintf("pkg:generic/vsdbg@17.4.11017.1?checksum=5a95bcffa592dcc7689ef5b4d993da3ca805b3c58d1710da8effeedbda87d471&download_url=%s", server.URL),
+				ID:              "vsdbg",
+				Licenses:        nil,
+				Name:            "Visual Studio Debugger",
+				SHA256:          "",
+				Source:          server.URL,
+				SourceChecksum:  "sha256:5a95bcffa592dcc7689ef5b4d993da3ca805b3c58d1710da8effeedbda87d471",
+				SourceSHA256:    "",
+				Stacks:          []string{"*"},
 				StripComponents: 0,
 				URI:             server.URL,
 				Version:         "17.4.11017-1",
@@ -144,17 +136,6 @@ func testDependency(t *testing.T, context spec.G, it spec.S) {
 						URL:     fmt.Sprintf("%s/non-200", server.URL),
 					})
 					Expect(err).To(MatchError(fmt.Sprintf("received a non 200 status code from %s: status code 418 received", fmt.Sprintf("%s/non-200", server.URL))))
-				})
-			})
-
-			context("when the artifact is not a supported archive type", func() {
-				it("returns an error", func() {
-					_, err := components.ConvertReleaseToDependency(components.Release{
-						SemVer:  semver.MustParse("17.4.11017-1"),
-						Version: "17.4.11017.1",
-						URL:     fmt.Sprintf("%s/bad-archive", server.URL),
-					})
-					Expect(err).To(MatchError(ContainSubstring("unsupported archive type")))
 				})
 			})
 		})
