@@ -14,9 +14,12 @@ api = "0.8"
     "buildpack.toml",
     "linux/amd64/bin/build",
     "linux/amd64/bin/detect",
-    "linux/amd64/bin/run"
+    "linux/amd64/bin/run",
+    "linux/arm64/bin/build",
+    "linux/arm64/bin/detect",
+    "linux/arm64/bin/run"
   ]
-  pre-package = "./scripts/build.sh --target linux/amd64"
+  pre-package = "./scripts/build.sh --target linux/amd64 --target linux/arm64"
 
   [[metadata.dependencies]]
     checksum = "sha256:4f81b07f4d1d9ed988eae1d354b257f83030689c0e00d2ad61721becdd94246a"
@@ -40,4 +43,8 @@ api = "0.8"
 
 [[targets]]
   arch = "amd64"
+  os = "linux"
+
+[[targets]]
+  arch = "arm64"
   os = "linux"
