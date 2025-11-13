@@ -10,16 +10,36 @@ api = "0.8"
     uri = "https://github.com/paketo-buildpacks/vsdbg/blob/main/LICENSE"
 
 [metadata]
-  include-files = [
-    "buildpack.toml",
-    "linux/amd64/bin/build",
-    "linux/amd64/bin/detect",
-    "linux/amd64/bin/run",
-    "linux/arm64/bin/build",
-    "linux/arm64/bin/detect",
-    "linux/arm64/bin/run"
-  ]
+  include-files = ["buildpack.toml", "linux/amd64/bin/build", "linux/amd64/bin/detect", "linux/amd64/bin/run", "linux/arm64/bin/build", "linux/arm64/bin/detect", "linux/arm64/bin/run"]
   pre-package = "./scripts/build.sh --target linux/amd64 --target linux/arm64"
+
+  [[metadata.dependencies]]
+    arch = "amd64"
+    checksum = "sha256:4f81b07f4d1d9ed988eae1d354b257f83030689c0e00d2ad61721becdd94246a"
+    cpe = "cpe:2.3:a:microsoft:vsdbg:18.0.10821.2:*:*:*:*:*:*:*"
+    id = "vsdbg"
+    name = "Visual Studio Debugger"
+    os = "linux"
+    purl = "pkg:generic/vsdbg@18.0.10821.2?checksum=4f81b07f4d1d9ed988eae1d354b257f83030689c0e00d2ad61721becdd94246a&download_url=https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-18-0-10821-2/vsdbg-linux-x64.tar.gz"
+    source = "https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-18-0-10821-2/vsdbg-linux-x64.tar.gz"
+    source-checksum = "sha256:4f81b07f4d1d9ed988eae1d354b257f83030689c0e00d2ad61721becdd94246a"
+    stacks = ["*"]
+    uri = "https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-18-0-10821-2/vsdbg-linux-x64.tar.gz"
+    version = "18.0.10821+2"
+
+  [[metadata.dependencies]]
+    arch = "arm64"
+    checksum = "sha256:a42c4f8dfc04ef52fab79926d3ffbad9e1a1f84db53723a1bc0f3a59d9223303"
+    cpe = "cpe:2.3:a:microsoft:vsdbg:18.0.10821.2:*:*:*:*:*:*:*"
+    id = "vsdbg"
+    name = "Visual Studio Debugger"
+    os = "linux"
+    purl = "pkg:generic/vsdbg@18.0.10821.2?checksum=a42c4f8dfc04ef52fab79926d3ffbad9e1a1f84db53723a1bc0f3a59d9223303&download_url=https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-18-0-10821-2/vsdbg-linux-arm64.tar.gz"
+    source = "https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-18-0-10821-2/vsdbg-linux-arm64.tar.gz"
+    source-checksum = "sha256:a42c4f8dfc04ef52fab79926d3ffbad9e1a1f84db53723a1bc0f3a59d9223303"
+    stacks = ["*"]
+    uri = "https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-18-0-10821-2/vsdbg-linux-arm64.tar.gz"
+    version = "18.0.10821+2"
 
   [[metadata.dependency-constraints]]
     constraint = "*"
