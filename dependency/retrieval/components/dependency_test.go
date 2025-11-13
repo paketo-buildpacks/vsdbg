@@ -10,6 +10,8 @@ import (
 	"testing"
 
 	"github.com/Masterminds/semver/v3"
+	"github.com/paketo-buildpacks/libdependency/retrieve"
+	"github.com/paketo-buildpacks/libdependency/versionology"
 	"github.com/paketo-buildpacks/packit/v2/cargo"
 	"github.com/paketo-buildpacks/vsdbg/dependency/retrieval/components"
 	"github.com/sclevine/spec"
@@ -50,7 +52,7 @@ func testDependency(t *testing.T, context spec.G, it spec.S) {
 		Expect = NewWithT(t).Expect
 	)
 
-	context("ConvertReleaseToDependeny", func() {
+	context("GenerateMetadata", func() {
 		var (
 			server *httptest.Server
 		)
@@ -87,54 +89,66 @@ func testDependency(t *testing.T, context spec.G, it spec.S) {
 					t.Fatalf("unknown path: %s", req.URL.Path)
 				}
 			}))
-
 		})
 
 		it("returns returns a cargo dependency generated from the given release", func() {
-			dependency, err := components.ConvertReleaseToDependency(components.Release{
-				SemVer:  semver.MustParse("17.4.11017-1"),
-				Version: "17.4.11017.1",
-				URL:     server.URL,
-			})
+			generator := components.NewGenerator().WithFakeUrl(server.URL)
+			dependencies, err := generator.GenerateMetadata(components.VsdbgRelease{
+				SemVer:         semver.MustParse("17.4.11017-1"),
+				ReleaseVersion: "17.4.11017.1",
+				SplitVersion:   []string{"17", "4", "11017", "1"},
+			}, retrieve.Platform{OS: "linux", Arch: "amd64"})
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(dependency).To(Equal(cargo.ConfigMetadataDependency{
-				Checksum:        "sha256:5a95bcffa592dcc7689ef5b4d993da3ca805b3c58d1710da8effeedbda87d471",
-				CPE:             "cpe:2.3:a:microsoft:vsdbg:17.4.11017.1:*:*:*:*:*:*:*",
-				PURL:            fmt.Sprintf("pkg:generic/vsdbg@17.4.11017.1?checksum=5a95bcffa592dcc7689ef5b4d993da3ca805b3c58d1710da8effeedbda87d471&download_url=%s", server.URL),
-				ID:              "vsdbg",
-				Licenses:        nil,
-				Name:            "Visual Studio Debugger",
-				SHA256:          "",
-				Source:          server.URL,
-				SourceChecksum:  "sha256:5a95bcffa592dcc7689ef5b4d993da3ca805b3c58d1710da8effeedbda87d471",
-				SourceSHA256:    "",
-				Stacks:          []string{"*"},
-				StripComponents: 0,
-				URI:             server.URL,
-				Version:         "17.4.11017-1",
-			}))
+			Expect(dependencies).To(HaveLen(1))
+			dependency := dependencies[0]
+
+			Expect(dependency).To(BeEquivalentTo(
+				versionology.Dependency{
+					ConfigMetadataDependency: cargo.ConfigMetadataDependency{
+						Checksum:        "sha256:5a95bcffa592dcc7689ef5b4d993da3ca805b3c58d1710da8effeedbda87d471",
+						CPE:             "cpe:2.3:a:microsoft:vsdbg:17.4.11017.1:*:*:*:*:*:*:*",
+						PURL:            fmt.Sprintf("pkg:generic/vsdbg@17.4.11017.1?checksum=5a95bcffa592dcc7689ef5b4d993da3ca805b3c58d1710da8effeedbda87d471&download_url=%s", server.URL),
+						ID:              "vsdbg",
+						Licenses:        nil,
+						Name:            "Visual Studio Debugger",
+						SHA256:          "",
+						Source:          server.URL,
+						SourceChecksum:  "sha256:5a95bcffa592dcc7689ef5b4d993da3ca805b3c58d1710da8effeedbda87d471",
+						SourceSHA256:    "",
+						StripComponents: 0,
+						URI:             server.URL,
+						Version:         "17.4.11017-1",
+						OS:              "linux",
+						Arch:            "amd64",
+						Stacks:          []string{"*"},
+					},
+					SemverVersion: semver.MustParse("17.4.11017-1"),
+					Target:        "*",
+				}))
 		})
 
 		context("failure cases", func() {
 			context("when the release get fails", func() {
 				it("returns an error", func() {
-					_, err := components.ConvertReleaseToDependency(components.Release{
-						SemVer:  semver.MustParse("17.4.11017-1"),
-						Version: "17.4.11017.1",
-						URL:     "not a valid url",
-					})
+					generator := components.NewGenerator().WithFakeUrl("not a valid url")
+					_, err := generator.GenerateMetadata(components.VsdbgRelease{
+						SemVer:         semver.MustParse("17.4.11017-1"),
+						ReleaseVersion: "17.4.11017.1",
+						SplitVersion:   []string{"17", "4", "11017", "1"},
+					}, retrieve.Platform{OS: "linux", Arch: "amd64"})
 					Expect(err).To(MatchError(ContainSubstring("unsupported protocol scheme")))
 				})
 			})
 
 			context("when the release get is a non 200", func() {
 				it("returns an error", func() {
-					_, err := components.ConvertReleaseToDependency(components.Release{
-						SemVer:  semver.MustParse("17.4.11017-1"),
-						Version: "17.4.11017.1",
-						URL:     fmt.Sprintf("%s/non-200", server.URL),
-					})
+					generator := components.NewGenerator().WithFakeUrl(fmt.Sprintf("%s/non-200", server.URL))
+					_, err := generator.GenerateMetadata(components.VsdbgRelease{
+						SemVer:         semver.MustParse("17.4.11017-1"),
+						ReleaseVersion: "17.4.11017.1",
+						SplitVersion:   []string{"17", "4", "11017", "1"},
+					}, retrieve.Platform{OS: "linux", Arch: "amd64"})
 					Expect(err).To(MatchError(fmt.Sprintf("received a non 200 status code from %s: status code 418 received", fmt.Sprintf("%s/non-200", server.URL))))
 				})
 			})

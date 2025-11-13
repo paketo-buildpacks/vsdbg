@@ -7,17 +7,21 @@ import (
 	"strings"
 
 	"github.com/Masterminds/semver/v3"
+	"github.com/paketo-buildpacks/libdependency/versionology"
 )
 
-type Release struct {
-	SemVer *semver.Version
-	URL    string
-
-	Version string `json:"version"`
+type VsdbgRelease struct {
+	SemVer         *semver.Version
+	ReleaseVersion string `json:"version"`
+	SplitVersion   []string
 }
 
 type Fetcher struct {
 	scriptURL string
+}
+
+func (r VsdbgRelease) Version() *semver.Version {
+	return r.SemVer
 }
 
 func NewFetcher() Fetcher {
@@ -31,7 +35,7 @@ func (f Fetcher) WithScriptURL(url string) Fetcher {
 	return f
 }
 
-func (f Fetcher) Get() ([]Release, error) {
+func (f Fetcher) GetVersions() (versionology.VersionFetcherArray, error) {
 	response, err := http.Get(f.scriptURL)
 	if err != nil {
 		return nil, err
@@ -71,21 +75,18 @@ func (f Fetcher) Get() ([]Release, error) {
 		return nil, fmt.Errorf("latest version not found")
 	}
 
-	splitVersion := strings.Split(version, ".")
-	if len(splitVersion) != 4 {
+	var release VsdbgRelease
+
+	release.ReleaseVersion = version
+	release.SplitVersion = strings.Split(version, ".")
+	if len(release.SplitVersion) != 4 {
 		return nil, fmt.Errorf("unexpect version: expected %q to be in the format of w.x.y.z", version)
 	}
 
-	var release Release
-
-	release.Version = version
-
-	release.URL = fmt.Sprintf("https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-%s/vsdbg-linux-x64.tar.gz", strings.Join(splitVersion, "-"))
-
-	release.SemVer, err = semver.NewVersion(fmt.Sprintf("%s+%s", strings.Join(splitVersion[:3], "."), splitVersion[3]))
+	release.SemVer, err = semver.NewVersion(fmt.Sprintf("%s+%s", strings.Join(release.SplitVersion[:3], "."), release.SplitVersion[3]))
 	if err != nil {
-		return nil, fmt.Errorf("%w: the following version string could not be parsed %q", err, release.Version)
+		return nil, fmt.Errorf("%w: the following version string could not be parsed %q", err, release.ReleaseVersion)
 	}
 
-	return []Release{release}, nil
+	return []versionology.VersionFetcher{release}, nil
 }

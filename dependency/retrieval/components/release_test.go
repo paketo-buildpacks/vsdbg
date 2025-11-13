@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/Masterminds/semver/v3"
+	"github.com/paketo-buildpacks/libdependency/versionology"
 	"github.com/paketo-buildpacks/vsdbg/dependency/retrieval/components"
 	"github.com/sclevine/spec"
 
@@ -21,7 +22,7 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 		Expect = NewWithT(t).Expect
 	)
 
-	context("Fetcher", func() {
+	context("GetVersions", func() {
 		var (
 			fetcher components.Fetcher
 
@@ -95,14 +96,14 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		it("fetches a list of relevant releases", func() {
-			releases, err := fetcher.Get()
+			releases, err := fetcher.GetVersions()
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(releases).To(Equal([]components.Release{
-				{
-					SemVer:  semver.MustParse("17.4.11017+1"),
-					Version: "17.4.11017.1",
-					URL:     "https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-17-4-11017-1/vsdbg-linux-x64.tar.gz",
+			Expect(releases).To(BeEquivalentTo([]versionology.VersionFetcher{
+				components.VsdbgRelease{
+					SemVer:         semver.MustParse("17.4.11017+1"),
+					ReleaseVersion: "17.4.11017.1",
+					SplitVersion:   []string{"17", "4", "11017", "1"},
 				},
 			}))
 		})
@@ -114,7 +115,7 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error", func() {
-					_, err := fetcher.Get()
+					_, err := fetcher.GetVersions()
 					Expect(err).To(MatchError(ContainSubstring("unsupported protocol scheme")))
 				})
 			})
@@ -125,7 +126,7 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error", func() {
-					_, err := fetcher.Get()
+					_, err := fetcher.GetVersions()
 					Expect(err).To(MatchError(fmt.Sprintf("received a non 200 status code from %s: status code 418 received", fmt.Sprintf("%s/non-200", server.URL))))
 				})
 			})
@@ -136,7 +137,7 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error", func() {
-					_, err := fetcher.Get()
+					_, err := fetcher.GetVersions()
 					Expect(err).To(MatchError(`set_vsdbg_version() function not found`))
 				})
 			})
@@ -147,7 +148,7 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error", func() {
-					_, err := fetcher.Get()
+					_, err := fetcher.GetVersions()
 					Expect(err).To(MatchError(`latest version not found`))
 				})
 			})
@@ -158,7 +159,7 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error", func() {
-					_, err := fetcher.Get()
+					_, err := fetcher.GetVersions()
 					Expect(err).To(MatchError(`unexpect version: expected "wrong format" to be in the format of w.x.y.z`))
 				})
 			})
@@ -169,7 +170,7 @@ func testReleases(t *testing.T, context spec.G, it spec.S) {
 				})
 
 				it("returns an error", func() {
-					_, err := fetcher.Get()
+					_, err := fetcher.GetVersions()
 					Expect(err).To(MatchError(ContainSubstring("invalid semantic version")))
 				})
 			})
