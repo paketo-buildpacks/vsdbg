@@ -20,11 +20,11 @@ api = "0.8"
     id = "vsdbg"
     name = "Visual Studio Debugger"
     os = "linux"
-    purl = "pkg:generic/vsdbg@18.7.10521.2?checksum=2f30636772b8a1202a99dd736cdefcad5a42277539c18193fc37d6741072ab1b&download_url=https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-18-7-10521-2/vsdbg-linux-x64.tar.gz"
-    source = "https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-18-7-10521-2/vsdbg-linux-x64.tar.gz"
+    purl = "pkg:generic/vsdbg@18.7.10521.2?checksum=2f30636772b8a1202a99dd736cdefcad5a42277539c18193fc37d6741072ab1b&download_url=https://download.visualstudio.microsoft.com/download/pr/c94b5ca1-bd33-4a0c-bfb4-9c9a44ef97d1/vsdbg-18-7-10521-2-linux-x64.tar.gz"
+    source = "https://download.visualstudio.microsoft.com/download/pr/c94b5ca1-bd33-4a0c-bfb4-9c9a44ef97d1/vsdbg-18-7-10521-2-linux-x64.tar.gz"
     source-checksum = "sha256:2f30636772b8a1202a99dd736cdefcad5a42277539c18193fc37d6741072ab1b"
     stacks = ["*"]
-    uri = "https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-18-7-10521-2/vsdbg-linux-x64.tar.gz"
+    uri = "https://download.visualstudio.microsoft.com/download/pr/c94b5ca1-bd33-4a0c-bfb4-9c9a44ef97d1/vsdbg-18-7-10521-2-linux-x64.tar.gz"
     version = "18.7.10521+2"
 
   [[metadata.dependencies]]
@@ -34,11 +34,11 @@ api = "0.8"
     id = "vsdbg"
     name = "Visual Studio Debugger"
     os = "linux"
-    purl = "pkg:generic/vsdbg@18.7.10521.2?checksum=a30fc9926d62ee1fe04c7ccb103102d006ce5884babe3249f51eb77492770177&download_url=https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-18-7-10521-2/vsdbg-linux-arm64.tar.gz"
-    source = "https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-18-7-10521-2/vsdbg-linux-arm64.tar.gz"
+    purl = "pkg:generic/vsdbg@18.7.10521.2?checksum=a30fc9926d62ee1fe04c7ccb103102d006ce5884babe3249f51eb77492770177&download_url=https://download.visualstudio.microsoft.com/download/pr/c94b5ca1-bd33-4a0c-bfb4-9c9a44ef97d1/vsdbg-18-7-10521-2-linux-arm64.tar.gz"
+    source = "https://download.visualstudio.microsoft.com/download/pr/c94b5ca1-bd33-4a0c-bfb4-9c9a44ef97d1/vsdbg-18-7-10521-2-linux-arm64.tar.gz"
     source-checksum = "sha256:a30fc9926d62ee1fe04c7ccb103102d006ce5884babe3249f51eb77492770177"
     stacks = ["*"]
-    uri = "https://vsdebugger-cyg0dxb6czfafzaz.b01.azurefd.net/vsdbg-18-7-10521-2/vsdbg-linux-arm64.tar.gz"
+    uri = "https://download.visualstudio.microsoft.com/download/pr/c94b5ca1-bd33-4a0c-bfb4-9c9a44ef97d1/vsdbg-18-7-10521-2-linux-arm64.tar.gz"
     version = "18.7.10521+2"
 
   [[metadata.dependency-constraints]]
